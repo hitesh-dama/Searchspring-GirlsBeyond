@@ -13,7 +13,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
   return (
     <div className="group card-hover bg-white rounded-2xl shadow-md overflow-hidden">
-      <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-pink-50 to-rose-50">
+      <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-pink-50 to-rose-50 z-0">
         <img
           src={product.thumbnailImageUrl}
           alt={product.name}
@@ -27,16 +27,15 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
         <button
           onClick={() => setIsLiked(!isLiked)}
-          className="absolute top-3 right-3 bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-all z-10 active:scale-90"
+          className="absolute top-3 right-3 bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-all active:scale-90"
           aria-label="Add to wishlist"
         >
           <Heart
             size={20}
-            className={`transition-all ${
-              isLiked
+            className={`transition-all ${isLiked
                 ? 'fill-rose-500 text-rose-500'
                 : 'text-gray-400 hover:text-rose-400'
-            }`}
+              }`}
           />
         </button>
 
