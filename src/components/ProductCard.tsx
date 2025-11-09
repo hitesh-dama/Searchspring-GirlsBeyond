@@ -17,7 +17,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         <img
           src={product.thumbnailImageUrl}
           alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+          className="w-full h-full object-contain mx-auto my-auto max-h-full max-w-full block transition-transform duration-500 bg-white"
           loading="lazy"
           onError={(e) => {
             (e.target as HTMLImageElement).src =

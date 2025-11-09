@@ -8,14 +8,11 @@ export class SearchApiError extends Error {
   }
 }
 
+
 export const searchProducts = async ({
   query,
   page,
 }: SearchParams): Promise<SearchResponse> => {
-  if (!query.trim()) {
-    throw new SearchApiError('Search query cannot be empty');
-  }
-
   const params = new URLSearchParams({
     siteId: API_CONFIG.SITE_ID,
     q: query.trim(),

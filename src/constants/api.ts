@@ -3,6 +3,7 @@ export const API_CONFIG = {
   SITE_ID: 'scmq7n',
   RESULTS_FORMAT: 'native',
   DEFAULT_PAGE: 1,
+  DEFAULT_QUERY: '',
 } as const;
 
 export const ERROR_MESSAGES = {

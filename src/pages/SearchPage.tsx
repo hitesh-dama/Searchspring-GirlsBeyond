@@ -1,4 +1,5 @@
 import { useSearch } from '../hooks/useSearch';
+import { API_CONFIG } from '../constants/api';
 import { SearchBar } from '../components/SearchBar';
 import { ProductCard } from '../components/ProductCard';
 import { Pagination } from '../components/Pagination';
@@ -8,11 +9,16 @@ import { EmptyState } from '../components/EmptyState';
 import { Sparkles } from 'lucide-react';
 
 export const SearchPage = () => {
-  const { data, isLoading, error, currentQuery, performSearch, changePage, retry } =
-    useSearch();
+  const { data, isLoading, error, currentQuery, performSearch, changePage, retry, resetSearch } =
+    useSearch(API_CONFIG.DEFAULT_QUERY);
+
 
   const handleSearch = (query: string) => {
     performSearch(query, 1);
+  };
+
+  const handleReset = () => {
+    resetSearch(1);
   };
 
   const handlePageChange = (page: number) => {
@@ -33,7 +39,8 @@ export const SearchPage = () => {
           </div>
           <SearchBar
             onSearch={handleSearch}
-            initialQuery={currentQuery}
+            onReset={handleReset}
+            initialQuery={API_CONFIG.DEFAULT_QUERY}
             isLoading={isLoading}
           />
         </div>
@@ -54,10 +61,15 @@ export const SearchPage = () => {
                     <span className="font-bold text-pink-600">
                       {data.pagination.totalResults}
                     </span>{' '}
-                    items for{' '}
-                    <span className="font-bold text-rose-600 italic">
-                      "{currentQuery}"
-                    </span>
+                    items
+                    {currentQuery && (
+                      <>
+                        {' '}for{' '}
+                        <span className="font-bold text-rose-600 italic">
+                          "{currentQuery}"
+                        </span>
+                      </>
+                    )}
                   </p>
                 </div>
                 <div className="hidden md:block">

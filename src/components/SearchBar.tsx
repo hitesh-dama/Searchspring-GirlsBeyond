@@ -1,18 +1,24 @@
-import { useState, FormEvent, ChangeEvent } from 'react';
+import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import { Search, Sparkles } from 'lucide-react';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
+  onReset?: () => void;
   initialQuery?: string;
   isLoading?: boolean;
 }
 
 export const SearchBar = ({
   onSearch,
+  onReset,
   initialQuery = '',
   isLoading = false,
 }: SearchBarProps) => {
   const [query, setQuery] = useState(initialQuery);
+
+  useEffect(() => {
+    setQuery(initialQuery || '');
+  }, [initialQuery]);
   const [isFocused, setIsFocused] = useState(false);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -57,6 +63,24 @@ export const SearchBar = ({
           <Sparkles size={18} />
           Find
         </button>
+        {query && (
+          <button
+            type="button"
+            disabled={isLoading}
+            onClick={() => {
+              setQuery('');
+              if (onReset) {
+                onReset();
+              } else {
+                onSearch('');
+              }
+            }}
+            className="absolute right-32 btn-secondary flex items-center gap-1.5 px-4 py-2 text-sm border border-pink-300 text-pink-600 hover:bg-pink-50 transition-all rounded-full"
+            aria-label="Clear filter and show all products"
+          >
+            Reset
+          </button>
+        )}
       </div>
     </form>
   );

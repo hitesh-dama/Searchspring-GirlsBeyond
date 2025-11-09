@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { searchProducts, SearchApiError } from '../services/searchApi';
 import { SearchResponse } from '../types/product';
 import { API_CONFIG, ERROR_MESSAGES } from '../constants/api';
@@ -10,7 +10,7 @@ interface UseSearchState {
   currentQuery: string;
 }
 
-export const useSearch = () => {
+export const useSearch = (initialQuery: string = API_CONFIG.DEFAULT_QUERY) => {
   const [state, setState] = useState<UseSearchState>({
     data: null,
     isLoading: false,
@@ -19,8 +19,8 @@ export const useSearch = () => {
   });
 
   const performSearch = useCallback(
-    async (query: string, page: number = API_CONFIG.DEFAULT_PAGE) => {
-      if (!query.trim()) {
+    async (query: string, page: number = API_CONFIG.DEFAULT_PAGE, isUserInitiated: boolean = false) => {
+      if (isUserInitiated && !query.trim()) {
         setState({
           data: null,
           isLoading: false,
@@ -30,7 +30,7 @@ export const useSearch = () => {
         return;
       }
 
-      setState((prev) => ({
+      setState((prev: any) => ({
         ...prev,
         isLoading: true,
         error: null,
@@ -78,28 +78,38 @@ export const useSearch = () => {
     []
   );
 
+  useEffect(() => {
+    performSearch(initialQuery, API_CONFIG.DEFAULT_PAGE, false);
+  }, [initialQuery, performSearch]);
+
   const changePage = useCallback(
     (page: number) => {
-      if (state.currentQuery) {
-        performSearch(state.currentQuery, page);
-      }
+      performSearch(state.currentQuery, page, false);
     },
     [state.currentQuery, performSearch]
   );
 
   const retry = useCallback(() => {
-    if (state.currentQuery) {
-      performSearch(
-        state.currentQuery,
-        state.data?.pagination.currentPage ?? API_CONFIG.DEFAULT_PAGE
-      );
-    }
+    performSearch(
+      state.currentQuery,
+      state.data?.pagination.currentPage ?? API_CONFIG.DEFAULT_PAGE,
+      false
+    );
   }, [state.currentQuery, state.data?.pagination.currentPage, performSearch]);
+
+  const performUserSearch = (query: string, page: number = API_CONFIG.DEFAULT_PAGE) => {
+    performSearch(query, page, true);
+  };
+
+  const resetSearch = (page: number = API_CONFIG.DEFAULT_PAGE) => {
+    performSearch('', page, false);
+  };
 
   return {
     ...state,
-    performSearch,
+    performSearch: performUserSearch,
     changePage,
     retry,
+    resetSearch,
   };
 };
